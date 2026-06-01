@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warrior Protocol | Elite AI Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.min.js"></script>
     
     <style>
@@ -497,6 +498,208 @@
             .img-hero { height: 240px; }
             .img-card img { height: 240px; }
         }
+
+        /* --- RICH DASHBOARD UPGRADES & AESTHETICS --- */
+        body {
+            font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+        }
+        
+        /* Modern Glassmorphic / Premium Card Styling */
+        .dashboard-box, .ai-insight-box, .header-bar, .table-wrap, .blueprint-container, .motivation-banner, .wave-container, .timing-table-wrapper, .sleep-logger, .sleep-matrix-wrapper {
+            border-radius: 16px !important;
+            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.01) !important;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            background: var(--box-bg) !important;
+        }
+
+        .dashboard-box:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06), 0 3px 8px rgba(0, 0, 0, 0.02) !important;
+            border-color: rgba(2, 119, 189, 0.2) !important;
+        }
+
+        body.dark-mode .dashboard-box, 
+        body.dark-mode .ai-insight-box, 
+        body.dark-mode .header-bar, 
+        body.dark-mode .table-wrap, 
+        body.dark-mode .blueprint-container, 
+        body.dark-mode .motivation-banner, 
+        body.dark-mode .wave-container, 
+        body.dark-mode .timing-table-wrapper, 
+        body.dark-mode .sleep-logger, 
+        body.dark-mode .sleep-matrix-wrapper {
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4) !important;
+            background: #18181c !important;
+        }
+
+        body.dark-mode .dashboard-box:hover {
+            border-color: rgba(2, 119, 189, 0.4) !important;
+        }
+
+        /* Improved Header bar */
+        .header-bar {
+            padding: 15px 25px !important;
+            background: linear-gradient(135deg, var(--box-bg) 0%, rgba(2, 119, 189, 0.03) 100%) !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+        }
+        body.dark-mode .header-bar {
+            background: linear-gradient(135deg, #18181c 0%, rgba(2, 119, 189, 0.05) 100%) !important;
+        }
+
+        /* Level Badge */
+        .level-badge {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #0277bd, #00acc1) !important;
+            padding: 5px 14px !important;
+            border-radius: 30px !important;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* AI Strategy Engine card */
+        .ai-insight-box {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%) !important;
+            border-left: 5px solid #00e5ff !important;
+            color: #fff !important;
+        }
+
+        /* Today's Live Routine timeline improvements */
+        .timeline-container::before {
+            background: linear-gradient(to bottom, #0277bd 0%, #00acc1 50%, #d84315 100%) !important;
+            width: 4px !important;
+            left: 21px !important;
+        }
+        .timeline-item::before {
+            left: 17px !important;
+            width: 12px !important;
+            height: 12px !important;
+            border: 3px solid var(--box-bg) !important;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15) !important;
+        }
+        .tl-content {
+            border-radius: 12px !important;
+            border: 1px solid rgba(0, 0, 0, 0.05) !important;
+            padding: 16px 20px !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02) !important;
+            background: var(--box-bg) !important;
+            transition: all 0.3s ease;
+        }
+        .timeline-item:hover .tl-content {
+            transform: translateX(3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05) !important;
+        }
+        .live-active .tl-content {
+            border: 1px solid rgba(216, 67, 21, 0.3) !important;
+            border-left: 8px solid #d84315 !important;
+            background: linear-gradient(to right, rgba(216, 67, 21, 0.03), var(--box-bg)) !important;
+            box-shadow: 0 10px 30px rgba(216, 67, 21, 0.15) !important;
+        }
+        body.dark-mode .live-active .tl-content {
+            border-color: rgba(216, 67, 21, 0.5) !important;
+            background: linear-gradient(to right, rgba(216, 67, 21, 0.08), #1e1e24) !important;
+            box-shadow: 0 10px 35px rgba(216, 67, 21, 0.25) !important;
+        }
+
+        /* Matrix cell designs */
+        .cell, .cell-empty, .cell-blocked, .cell-not-scheduled {
+            border-radius: 6px !important;
+            width: 22px !important;
+            height: 22px !important;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+        .cell:hover, .cell-empty:hover {
+            transform: scale(1.15);
+            z-index: 5;
+        }
+        .done {
+            background: linear-gradient(135deg, #66bb6a, #43a047) !important;
+            border-color: #388e3c !important;
+            box-shadow: 0 2px 6px rgba(67, 160, 71, 0.3) !important;
+        }
+        .miss {
+            background: linear-gradient(135deg, #ef5350, #e53935) !important;
+            border-color: #d32f2f !important;
+            box-shadow: 0 2px 6px rgba(229, 57, 53, 0.3) !important;
+        }
+
+        /* Sticky Column Offsets to fix overlap */
+        th:nth-child(1), td:nth-child(1) { left: 0px !important; }
+        th:nth-child(2), td:nth-child(2) { left: 70px !important; }
+        th:nth-child(3), td:nth-child(3) { left: 140px !important; }
+        th:nth-child(4), td:nth-child(4) { left: 360px !important; }
+
+        /* Activity Badges Styling */
+        .activity-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 6px;
+            border: 1px solid transparent;
+            font-family: 'Outfit', sans-serif;
+        }
+        .tag-study { background-color: rgba(142, 36, 170, 0.08) !important; color: #8e24aa !important; border-color: rgba(142, 36, 170, 0.2) !important; }
+        .tag-work { background-color: rgba(230, 81, 0, 0.08) !important; color: #e65100 !important; border-color: rgba(230, 81, 0, 0.2) !important; }
+        .tag-fitness { background-color: rgba(198, 40, 40, 0.08) !important; color: #c62828 !important; border-color: rgba(198, 40, 40, 0.2) !important; }
+        .tag-college { background-color: rgba(13, 71, 161, 0.08) !important; color: #0d47a1 !important; border-color: rgba(13, 71, 161, 0.2) !important; }
+        .tag-health { background-color: rgba(0, 121, 107, 0.08) !important; color: #00796b !important; border-color: rgba(0, 121, 107, 0.2) !important; }
+        .tag-personal { background-color: rgba(27, 94, 32, 0.08) !important; color: #1b5e20 !important; border-color: rgba(27, 94, 32, 0.2) !important; }
+        .tag-routine { background-color: rgba(127, 140, 141, 0.08) !important; color: #7f8c8d !important; border-color: rgba(127, 140, 141, 0.2) !important; }
+
+        body.dark-mode .tag-study { background-color: rgba(225, 190, 231, 0.1) !important; color: #e1bee7 !important; border-color: rgba(225, 190, 231, 0.2) !important; }
+        body.dark-mode .tag-work { background-color: rgba(255, 224, 178, 0.1) !important; color: #ffe0b2 !important; border-color: rgba(255, 224, 178, 0.2) !important; }
+        body.dark-mode .tag-fitness { background-color: rgba(255, 205, 210, 0.1) !important; color: #ffcdd2 !important; border-color: rgba(255, 205, 210, 0.2) !important; }
+        body.dark-mode .tag-college { background-color: rgba(187, 222, 253, 0.1) !important; color: #bbdefb !important; border-color: rgba(187, 222, 253, 0.2) !important; }
+        body.dark-mode .tag-health { background-color: rgba(224, 242, 241, 0.1) !important; color: #b2dfdb !important; border-color: rgba(224, 242, 241, 0.2) !important; }
+        body.dark-mode .tag-personal { background-color: rgba(200, 230, 201, 0.1) !important; color: #c8e6c9 !important; border-color: rgba(200, 230, 201, 0.2) !important; }
+        body.dark-mode .tag-routine { background-color: rgba(236, 240, 241, 0.1) !important; color: #eceff1 !important; border-color: rgba(236, 240, 241, 0.2) !important; }
+
+        /* Day Strip styling improvements */
+        .day-strip {
+            border-radius: 12px !important;
+            padding: 4px !important;
+            border: 1px solid rgba(0,0,0,0.08) !important;
+        }
+        .ds-cell {
+            border-radius: 8px !important;
+            border-right: none !important;
+            margin: 0 2px !important;
+            transition: all 0.2s ease !important;
+        }
+        .ds-cell:hover {
+            background: rgba(2,119,189,0.08) !important;
+            transform: translateY(-1px);
+        }
+        .ds-cell.selected-day {
+            background: linear-gradient(135deg, #0277bd, #00acc1) !important;
+            color: #fff !important;
+            box-shadow: 0 4px 10px rgba(2,119,189,0.3) !important;
+        }
+
+        /* Tab buttons */
+        .tab {
+            border-radius: 10px 10px 0 0 !important;
+            border: 1px solid rgba(0,0,0,0.08) !important;
+            border-bottom: none !important;
+            transition: all 0.2s ease !important;
+        }
+        .tab:hover {
+            opacity: 0.9;
+            background: #e8eaf6;
+        }
+        body.dark-mode .tab:hover {
+            background: #2a2a30;
+        }
+        .tab.active {
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.03) !important;
+        }
     </style>
 </head>
 <body>
@@ -524,6 +727,7 @@
             <button class="nav-btn" style="border-color:#c62828; color:#ef9a9a;" onclick="resetData()">⚠ Reset Data</button>
             <button class="nav-btn" style="margin-top:10px; border-color:#2e7d32; color:#a5d6a7;" onclick="exportToExcel()">📥 Export to Excel</button>
             <button class="nav-btn" style="margin-top:10px; border-color:#d84315; color:#ffab91; font-weight:bold;" onclick="loadMasterRoutine()">⚡ Load Master Routine</button>
+            <button class="nav-btn" style="margin-top:10px; border-color:#f57c00; color:#ffe082; font-weight:bold;" onclick="loadMasterHolidayRoutine()">⚡ Load Holiday Routine</button>
             <button class="nav-btn" style="margin-top:10px; border-color:#1565c0; color:#90caf9; font-weight:bold;" onclick="openRoadmap()">🚀 16-Week Roadmap</button>
         </div>
         <div class="nav-section" style="border-top:1px dashed #777; margin-top:20px; padding-top:20px;">
@@ -976,6 +1180,51 @@
         { t: "Discipline equals freedom.", a: "Jocko Willink" }
     ];
 
+    const masterHolidayRoutineData = [
+        { start: "06:00", end: "06:04", name: "🌅 Wake Up", water: "--", rule: "Wake up 6 am to 6:04 am. Mobile 0 screen time.", goal: 30, freq: [0,1,2,3,4,5,6] },
+        { start: "06:04", end: "06:35", name: "🧼 Fresh Up & Planning", water: "--", rule: "Fresh Up and some planning today works proper.", goal: 30, freq: [0,1,2,3,4,5,6] },
+        { start: "06:35", end: "07:00", name: "🏃 Exercise / Workout", water: "--", rule: "Get active, stretch or light workout.", goal: 30, freq: [0,1,2,3,4,5,6] },
+        { start: "07:00", end: "07:25", name: "🚿 Shower", water: "--", rule: "Fresh shower to activate the day.", goal: 30, freq: [0,1,2,3,4,5,6] },
+        { start: "07:25", end: "07:30", name: "🧹 Room Clean & Bed Sheets", water: "--", rule: "anything room fresh and clean BEDSHEET until all work finish with Mobile 0 screen time.", goal: 30, freq: [0,1,2,3,4,5,6] },
+        { start: "07:30", end: "09:30", name: "🧠 DSA Basic & Back Revision", water: "--", rule: "DSA Basic+ BACK REVISION. Strict 0 screen time on phone.", goal: 30, freq: [0,1,2,3,4,5,6] },
+        { start: "09:30", end: "10:00", name: "🍳 Breakfast / Nasta & Break", water: "--", rule: "9:30 to after Nasta then some time break after.", goal: 30, freq: [0,1,2,3,4,5,6] }
+    ];
+
+    function getActivityBadge(name) {
+        const lower = name.toLowerCase();
+        let label = "Routine";
+        let colorClass = "tag-routine";
+        let icon = "📋";
+        
+        if (lower.includes("dsa") || lower.includes("study") || lower.includes("revision") || lower.includes("planning")) {
+            label = "Study/DSA";
+            colorClass = "tag-study";
+            icon = "🧠";
+        } else if (lower.includes("dev") || lower.includes("work")) {
+            label = "Dev/Work";
+            colorClass = "tag-work";
+            icon = "💻";
+        } else if (lower.includes("gym") || lower.includes("exercise") || lower.includes("workout") || lower.includes("shoes") || lower.includes("outdoor") || lower.includes("cardio")) {
+            label = "Fitness";
+            colorClass = "tag-fitness";
+            icon = "🏋️";
+        } else if (lower.includes("college") || lower.includes("class")) {
+            label = "College";
+            colorClass = "tag-college";
+            icon = "🏫";
+        } else if (lower.includes("wake") || lower.includes("sleep") || lower.includes("nap")) {
+            label = "Sleep/Health";
+            colorClass = "tag-health";
+            icon = "🛌";
+        } else if (lower.includes("fresh") || lower.includes("shower") || lower.includes("clean") || lower.includes("walk") || lower.includes("movie") || lower.includes("free") || lower.includes("lunch") || lower.includes("breakfast") || lower.includes("dinner") || lower.includes("nasta") || lower.includes("tea")) {
+            label = "Life/Break";
+            colorClass = "tag-personal";
+            icon = "🌱";
+        }
+        
+        return `<span class="activity-badge ${colorClass}">${icon} ${label}</span>`;
+    }
+
     const masterRoutineData = [
         { start: "05:00", end: "05:20", name: "🌅 Wake Up", water: "Start Bottle 1 (300ml)", rule: "Toilet. Brush Teeth. Drink 300ml.", goal: 30, freq: [1,2,3,4,5] },
         { start: "05:20", end: "05:21", name: "👟 Shoes On", water: "--", rule: "Get out the door.", goal: 30, freq: [1,2,3,4,5] },
@@ -1185,7 +1434,12 @@
         if(!appData.sleep) appData.sleep = new Array(32).fill(0);
         if(!appData.sleepMeta) appData.sleepMeta = {};
         if(!appData.logs) appData.logs = {};
-        if(!appData.habitsHoliday) appData.habitsHoliday = [];
+        if(!appData.habitsHoliday || appData.habitsHoliday.length === 0) {
+            appData.habitsHoliday = masterHolidayRoutineData.map(h => ({
+                name: h.name, start: h.start, end: h.end, water: h.water, rule: h.rule, goal: h.goal, freq: h.freq, days: new Array(32).fill(0)
+            }));
+            localStorage.setItem(getKey(), JSON.stringify(appData));
+        }
         if(!appData.missedTaskReasons) appData.missedTaskReasons = {};
 
         const monthParts = monthSelect.value.split('-');
@@ -1202,7 +1456,9 @@
             habitsRegular: masterRoutineData.map(h => ({ 
                 name: h.name, start: h.start, end: h.end, water: h.water, rule: h.rule, goal: h.goal, freq: h.freq, days: new Array(32).fill(0) 
             })),
-            habitsHoliday: [],
+            habitsHoliday: masterHolidayRoutineData.map(h => ({ 
+                name: h.name, start: h.start, end: h.end, water: h.water, rule: h.rule, goal: h.goal, freq: h.freq, days: new Array(32).fill(0) 
+            })),
             dayModes: new Array(32).fill('regular'),
             holidayItinerary: {}, secretJournal: {}, roadmapProgress: {}, roadmapText: {}, roadmapMeta: {}, 
             sleep: new Array(32).fill(0), sleepMeta: {}, logs: {}, missedTaskReasons: {}
@@ -1216,6 +1472,16 @@
             }));
             saveData();
             renderRegularTable();
+        }
+    }
+
+    function loadMasterHolidayRoutine() {
+        if(confirm("⚠ WARNING: This will reset your Holiday habit list to the Master Holiday Routine. Continue?")) {
+            appData.habitsHoliday = masterHolidayRoutineData.map(h => ({ 
+                name: h.name, start: h.start, end: h.end, water: h.water, rule: h.rule, goal: h.goal, freq: h.freq, days: new Array(32).fill(0) 
+            }));
+            saveData();
+            renderHolidayTable();
         }
     }
 
@@ -1647,7 +1913,10 @@
                 <div class="tl-content">
                     ${liveBadge}
                     <div class="tl-time">🕒 ${slot.t}</div>
-                    <h4 class="tl-title">${actionText}</h4>
+                    <h4 class="tl-title" style="display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin: 0 0 10px 0;">
+                        ${getActivityBadge(slot.a)}
+                        <span>${actionText}</span>
+                    </h4>
                     <div class="tl-details">
                         ${slot.d && slot.d !== "--" ? `<span title="Specific Focus">⚡ ${slot.d}</span>` : ''}
                         ${slot.w && slot.w !== "--" ? `<span title="Hydration">💧 ${slot.w}</span>` : ''}
@@ -2032,8 +2301,11 @@
             tr.innerHTML = `
                 <td>${formatTime(h.start)}</td>
                 <td>${formatTime(h.end)}</td>
-                <td style="text-align:left; padding-left:10px;">
-                    <span style="font-weight:500; cursor:pointer; text-decoration:underline; color:#0277bd;" onclick="showTaskDetails(${rIdx})">${h.name}</span>
+                <td style="text-align:left; padding-left:10px; font-family:'Outfit', sans-serif;">
+                    <div style="display:flex; align-items:center; flex-wrap:wrap; gap:4px;">
+                        ${getActivityBadge(h.name)}
+                        <span style="font-weight:600; cursor:pointer; text-decoration:none; color:var(--text-main); font-size:0.9rem;" onclick="showTaskDetails(${rIdx})">${h.name}</span>
+                    </div>
                 </td>
                 <td style="color:#555;">${h.goal}</td>`;
             
@@ -2388,8 +2660,11 @@
             tr.innerHTML = `
                 <td>${formatTime(h.start)}</td>
                 <td>${formatTime(h.end)}</td>
-                <td style="text-align:left; padding-left:10px;">
-                    <span style="font-weight:500; cursor:pointer; text-decoration:underline; color:#0277bd;" onclick="showTaskDetails(${rIdx}, 'holiday')">${h.name}</span>
+                <td style="text-align:left; padding-left:10px; font-family:'Outfit', sans-serif;">
+                    <div style="display:flex; align-items:center; flex-wrap:wrap; gap:4px;">
+                        ${getActivityBadge(h.name)}
+                        <span style="font-weight:600; cursor:pointer; text-decoration:none; color:var(--text-main); font-size:0.9rem;" onclick="showTaskDetails(${rIdx}, 'holiday')">${h.name}</span>
+                    </div>
                 </td>
                 <td style="color:#555;">${h.goal}</td>`;
             

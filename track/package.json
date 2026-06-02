@@ -1,0 +1,29 @@
+{
+  "name": "practice-any",
+  "version": "1.0.0",
+  "description": "This workspace contains small HTML and CSS practice files.",
+  "main": "api-client.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ganeshgavhane02/simple-portfolio.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ganeshgavhane02/simple-portfolio/issues"
+  },
+  "homepage": "https://github.com/ganeshgavhane02/simple-portfolio#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "jsdom": "^29.1.1",
+    "mongoose": "^8.3.0"
+  }
+}

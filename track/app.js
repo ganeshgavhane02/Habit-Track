@@ -446,7 +446,12 @@
             habitsHoliday: masterHolidayRoutineData.map(h => ({ 
                 name: h.name, start: h.start, end: h.end, water: h.water, rule: h.rule, goal: h.goal, freq: h.freq, days: new Array(32).fill(0) 
             })),
-            dayModes: new Array(32).fill('regular'),
+            dayModes: (() => {
+                const modes = new Array(32).fill('regular');
+                modes[2] = 'holiday';
+                modes[3] = 'holiday';
+                return modes;
+            })(),
             holidayItinerary: {}, secretJournal: {}, roadmapProgress: {}, roadmapText: {}, roadmapMeta: {}, 
             sleep: new Array(32).fill(0), sleepMeta: {}, logs: {}, missedTaskReasons: {},
             deepNotes: [], deepNotesFolders: ["All Notes", "DSA Notes", "Journal", "Ideas"],
@@ -2849,7 +2854,7 @@
     
     // Backend API Sync handlers
     function syncWithBackend() {
-        fetch('/api/sync', {
+        fetch('http://localhost:3001/api/sync', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ key: getKey(), data: appData })
@@ -2860,7 +2865,7 @@
     }
     
     function loadFromBackend() {
-        return fetch(`/api/sync?key=${getKey()}`)
+        return fetch(`http://localhost:3001/api/sync?key=${getKey()}`)
         .then(res => {
             if (!res.ok) throw new Error("Sync failed");
             return res.json();
@@ -2885,7 +2890,7 @@
         if (!pass) return;
         
         // Try server validation
-        fetch('/api/auth/validate-journal', {
+        fetch('http://localhost:3001/api/auth/validate-journal', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ pass: pass })

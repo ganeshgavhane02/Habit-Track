@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warrior Protocol | Elite AI Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.min.js"></script>
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Custom Toast Notification Container -->
+<div id="toastContainer" class="toast-container"></div>
+
+<div class="header-bar">
+    <div>
+        <h2 style="margin:0; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">Planner Tracker Elite <span id="warriorBadge" class="level-badge">Lvl 1 <span class="exp-text" id="warriorExpTxt">0 XP</span></span></h2>
+        <div id="levelProgressContainer" class="level-progress-container" title="Level Progression">
+            <div id="levelProgressBar" class="level-progress-bar"></div>
+        </div>
+        <div id="liveClock" class="live-clock">Loading Date...</div>
+    </div>
+    <div>
+        <button class="menu-btn" style="font-size:1.2rem; margin-right:10px;" onclick="toggleDarkMode()">🌙</button>
+        <button class="menu-btn" onclick="toggleSideMenu()">☰</button>
+    </div>
+</div>
+
+<div id="sideOverlay" class="overlay" onclick="toggleSideMenu()"></div>
+<div id="sideMenu" class="side-nav">
+    <div class="side-nav-content">
+        <div class="nav-section">
+            <span style="display:block; color:#ccc; font-weight:bold; margin-bottom:5px;">TIME TRAVEL</span>
+            <input type="month" id="monthSelect" class="nav-input">
+        </div>
+        <div class="nav-section">
+            <button class="nav-btn" onclick="addNewHabit()">+ Add Custom Habit</button>
+            <button class="nav-btn" style="border-color:#c62828; color:#ef9a9a;" onclick="resetData()">⚠ Reset Data</button>
+            <button class="nav-btn" style="margin-top:10px; border-color:#2e7d32; color:#a5d6a7;" onclick="exportToExcel()">📥 Export to Excel</button>
+            <button class="nav-btn" style="margin-top:10px; border-color:#d84315; color:#ffab91; font-weight:bold;" onclick="loadMasterRoutine()">⚡ Load Master Routine</button>
+            <button class="nav-btn" style="margin-top:10px; border-color:#f57c00; color:#ffe082; font-weight:bold;" onclick="loadMasterHolidayRoutine()">⚡ Load Holiday Routine</button>
+            <button class="nav-btn" style="margin-top:10px; border-color:#1565c0; color:#90caf9; font-weight:bold;" onclick="openRoadmap()">🚀 16-Week Roadmap</button>
+        </div>
+        <div class="nav-section" style="border-top:1px dashed #777; margin-top:20px; padding-top:20px;">
+            <button class="nav-btn" onclick="downloadBackup()">💾 Save Backup (JSON)</button>
+            <button class="nav-btn" onclick="document.getElementById('restoreFile').click()">♻️ Restore Backup</button>
+            <input type="file" id="restoreFile" style="display:none" onchange="restoreBackup(this)">
+        </div>
+    </div>
+</div>
+
+<div class="ai-insight-box">
+    <div class="ai-header" style="cursor: pointer;" onclick="toggleWidget('aiOutput', this)">
+        <h3>🧠 AI Core Strategy Engine <span class="collapse-arrow">▼</span></h3>
+        <button onclick="event.stopPropagation(); runAIAnalysis()" style="background:#00e5ff; border:none; padding:5px 15px; border-radius:4px; font-weight:bold; cursor:pointer;">Scan Routine Matrix</button>
+    </div>
+    <div class="ai-content" id="aiOutput">
+        <div style="font-style: italic; color: #b2ebf2;">Click 'Scan Routine Matrix' to analyze your current consistency data and identify bottlenecks...</div>
+    </div>
+</div>
+
+
+
+<div id="motivationBanner" class="motivation-banner">
+    <p id="quoteText" class="quote-text">"Suffer the pain of discipline or suffer the pain of regret."</p>
+    <span id="quoteAuthor" class="quote-author">- Warrior Ethos -</span>
+</div>
+
+<div class="dashboard-box" style="margin-top:20px; background: linear-gradient(to bottom, #f0f8ff, transparent);">
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 2px solid #64b5f6; padding-bottom: 10px; margin-bottom: 10px; cursor: pointer;" onclick="toggleWidget('dailyScheduleList', this)">
+        <h3 style="margin:0; font-family:'Georgia',serif; color:#0277bd;">⚡ Today's Live Routine <span class="collapse-arrow">▼</span></h3>
+        <span style="font-size:0.8rem; color:#1e88e5; font-weight:bold;" id="tlStatusText">Live tracking active</span>
+    </div>
+    <div id="dailyScheduleList" class="timeline-container"></div>
+</div>
+
+<div class="wave-container" style="margin-top:20px;">
+    <div class="wave-box">
+        <div class="wave" id="waveFill"></div>
+        <div class="wave-text" id="waveText">0%</div>
+    </div>
+    <div class="wave-label">Monthly Efficiency</div>
+    <div class="wave-stats">
+        <div class="wave-stat-item">Tasks Remaining: <b id="statRemaining">0</b></div>
+        <div class="wave-stat-item">Global Improvement: <span id="statImprovement">-</span></div>
+    </div>
+</div>
+
+<div id="sleepDashboardView" class="dashboard-box" style="margin-top:20px; border-left: 5px solid #5c6bc0;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom:15px; cursor: pointer;" onclick="toggleWidget('sleepDashboardContent', this)">
+        <h3 style="margin:0; font-family:'Georgia',serif; color:#5c6bc0;">😴 Sleep Cycle & Timing Protocol <span class="collapse-arrow">▼</span></h3>
+        <span style="font-size:0.8rem; color:#777; font-weight:bold;">Duration Matrix & Detailed Logs</span>
+    </div>
+    <div id="sleepDashboardContent">
+    
+    <!-- Sleep analytics summary container -->
+    <div class="sleep-stats-row" id="sleepStatsRow">
+        <div class="sleep-stat-card">
+            <span class="sleep-stat-title">Average Duration</span>
+            <span class="sleep-stat-value" id="sleepAvgDuration">0.0 hrs</span>
+        </div>
+        <div class="sleep-stat-card">
+            <span class="sleep-stat-title">Sleep Consistency</span>
+            <span class="sleep-stat-value" id="sleepConsistencyScore">0%</span>
+        </div>
+        <div class="sleep-stat-card">
+            <span class="sleep-stat-title">Perfect Sleep (7-9 hrs)</span>
+            <span class="sleep-stat-value" id="sleepPerfectDays">0 days</span>
+        </div>
+    </div>
+
+    <div class="sleep-logger">
+        <div class="sl-group">
+            <span class="sl-label">Select Day (1-31)</span>
+            <input type="number" id="sleepLogDay" class="sl-input" style="width:110px;" min="1" max="31">
+        </div>
+        <div class="sl-group">
+            <span class="sl-label">Time to Bed</span>
+            <input type="time" id="sleepBedTime" class="sl-input" oninput="calculateSleepPreview()">
+        </div>
+        <div class="sl-group">
+            <span class="sl-label">Time Woke Up</span>
+            <input type="time" id="sleepWakeTime" class="sl-input" oninput="calculateSleepPreview()">
+        </div>
+        <div class="sl-group" style="justify-content: flex-end;">
+            <button class="sl-btn" onclick="logSleep()">Log Exact Timing</button>
+        </div>
+
+        <div style="margin-left:auto; text-align:right;">
+            <div id="sleepResultText" style="font-size:1.4rem; font-weight:900; color:#5c6bc0;">--</div>
+            <div style="font-size:0.75rem; color:#888; font-weight:bold; text-transform:uppercase;">Calculated Duration</div>
+        </div>
+    </div>
+
+    <div class="sleep-matrix-wrapper" id="sleepMatrixContainer">
+        </div>
+
+    <div style="margin-top: 25px;">
+        <h4 style="color:#4a3b32; margin-bottom:10px; font-family:'Georgia',serif; font-size:1.1rem;">🕒 Structured Timing History</h4>
+        <div class="timing-table-wrapper">
+            <table class="timing-table">
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">Day</th>
+                        <th style="width: 30%;">Bed Time</th>
+                        <th style="width: 30%;">Wake Time</th>
+                        <th style="width: 20%;">Total Duration</th>
+                        <th style="width: 10%;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="timingTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<div class="dashboard-box" style="margin-top:20px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom:15px; cursor: pointer;" onclick="toggleWidget('overallConsistencyContent', this)">
+        <h3 style="margin:0 0 5px 0; font-family:'Georgia',serif; color:#4a3b32;">📊 Overall Consistency <span class="collapse-arrow">▼</span></h3>
+        <span style="font-size:0.8rem; color:#777; font-weight:bold;">Monthly Graph</span>
+    </div>
+    <div id="overallConsistencyContent">
+        <div class="chart-area">
+            <div id="barContainer" style="display:flex; width:100%; height:100%; align-items:flex-end;"></div>
+            <svg class="svg-overlay" viewBox="0 0 1000 100" preserveAspectRatio="none">
+                <polyline id="lineCombo" points="" />
+            </svg>
+        </div>
+    </div>
+</div>
+
+<div class="day-strip" id="dayStrip"></div>
+
+<div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 10px;">
+    <div class="view-tabs" style="margin-bottom:0;">
+        <div class="tab tab-reg active" id="tabRegular" onclick="switchView('regular')">🏢 Habit Tracker Matrix</div>
+        <div class="tab tab-hol" id="tabHoliday" onclick="switchView('holiday')">🏖️ Holiday Planner</div>
+        <div class="tab" id="tabGita" onclick="switchView('gita')" style="background: linear-gradient(135deg, #ffb300, #f57f17); color: white; font-weight: bold; border-color: #f57f17;">🕉️ Gita Wisdom</div>
+        <div class="tab" id="tabNotes" onclick="switchView('notes')" style="background: linear-gradient(135deg, #e91e63, #9c27b0); color: white; font-weight: bold; border-color: #9c27b0;">📝 Deep Notes</div>
+    </div>
+    <div id="matrixFilterContainer">
+        <select id="matrixFilter" class="nav-input" style="padding: 6px; font-size: 0.9rem; cursor: pointer; color: #fff; background-color: #0277bd; border:none; border-radius:4px; outline:none;" onchange="renderRegularTable()">
+            <option value="today">⚡ Auto (Today's Tasks)</option>
+            <option value="all">📋 Show All Tasks</option>
+            <option disabled>──────────</option>
+            <option value="1">📌 Monday Tasks</option>
+            <option value="2">📌 Tuesday Tasks</option>
+            <option value="3">📌 Wednesday Tasks</option>
+            <option value="4">📌 Thursday Tasks</option>
+            <option value="5">📌 Friday Tasks</option>
+            <option value="6">📌 Saturday Tasks</option>
+            <option value="0">📌 Sunday Tasks</option>
+        </select>
+    </div>
+</div>
+
+<div class="table-wrap" id="regularView">
+    <table id="habitTable">
+        <colgroup>
+            <col class="c-start"><col class="c-end"><col class="c-name"><col class="c-goal">
+            <script>for(let i=0; i<31; i++) document.write('<col class="c-day">');</script>
+            <col class="c-stat"><col class="c-stat"><col class="c-stat">
+        </colgroup>
+        <thead id="habitHead"></thead>
+        <tbody id="habitBody"></tbody>
+    </table>
+</div>
+
+<div class="holiday-wrapper" id="holidayView" style="display:none;">
+    <div class="holiday-hero" style="background: linear-gradient(135deg, #1f1c2c 0%, #928dab 100%); color: white; border: none; border-radius: 16px; padding: 20px 24px; box-shadow: 0 10px 25px rgba(31, 28, 44, 0.25);">
+        <div>
+            <h3 style="color: white; font-family: 'Outfit', sans-serif; margin:0 0 5px 0;">🏖️ Day Itinerary & Holiday Planner</h3>
+            <div class="holiday-hero-subtitle" style="color: rgba(255,255,255,0.9); font-size:0.9rem;">Selected Day: <b id="holDateTitle" style="font-size: 1.1rem; color: #ffeb3b;">Day 1</b> | Day Mode: <span id="holDayModeBadge" class="level-badge" style="background:#5c6bc0 !important; vertical-align: middle;">Regular Day</span></div>
+        </div>
+        <button class="nav-btn" style="width:auto; margin:0; border-color:#ffeb3b; color:#ffeb3b; font-weight:bold; background: transparent; text-align: center; border-radius: 8px;" onclick="toggleSelectedDayMode()">🔄 Switch Day Mode</button>
+    </div>
+
+    <div class="holiday-metrics-line" id="holidayMetricsLine" style="font-size: 0.88rem; color: var(--text-main); font-weight: normal; line-height: 1.4;">
+        Manage custom tasks for the selected day. Holiday days have unique, day-specific itineraries.
+    </div>
+
+    <!-- Quick Add Form for Selected Day Tasks -->
+    <div class="hol-input-group" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+        <input type="text" id="htName" placeholder="Task Name (e.g. DSA, Web Dev)" class="nav-input" style="flex:2; background: rgba(0,0,0,0.03); color: var(--text-main); border: 1px solid rgba(0,0,0,0.15); width: auto; border-radius: 8px; padding: 10px 14px;">
+        <input type="time" id="htStart" class="nav-input" style="flex:1; background: rgba(0,0,0,0.03); color: var(--text-main); border: 1px solid rgba(0,0,0,0.15); width: auto; border-radius: 8px; padding: 10px 14px;">
+        <input type="time" id="htEnd" class="nav-input" style="flex:1; background: rgba(0,0,0,0.03); color: var(--text-main); border: 1px solid rgba(0,0,0,0.15); width: auto; border-radius: 8px; padding: 10px 14px;">
+        <input type="text" id="htRule" placeholder="Specific focus / Emoji focus" class="nav-input" style="flex:1.5; background: rgba(0,0,0,0.03); color: var(--text-main); border: 1px solid rgba(0,0,0,0.15); width: auto; border-radius: 8px; padding: 10px 14px;">
+        <button class="hol-btn-add" onclick="addSelectedDayTask()" style="background: #9c27b0; font-family: inherit; font-weight: bold; font-size: 0.9rem; border-radius: 8px; padding: 10px 24px; cursor: pointer;">+ Add Task</button>
+    </div>
+
+    <div id="holidayListContainer">
+        <!-- Day specific tasks injected by JS -->
+    </div>
+
+    <!-- 🏖️ Monthly Holiday Checklist Matrix Grid -->
+    <div style="margin-top: 40px; border-top: 1px solid var(--border-color); padding-top: 25px;">
+        <h3 style="font-family: 'Outfit', sans-serif; color: var(--text-main); margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">📊 Monthly Holiday Checklist Matrix</h3>
+        <div class="table-wrap">
+            <table id="holidayTable">
+                <colgroup>
+                    <col class="c-start"><col class="c-end"><col class="c-name"><col class="c-goal">
+                    <script>for(let i=0; i<31; i++) document.write('<col class="c-day">');</script>
+                    <col class="c-stat"><col class="c-stat"><col class="c-stat">
+                </colgroup>
+                <thead id="holidayHead"></thead>
+                <tbody id="holidayBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="gita-wrapper" id="gitaView" style="display:none;">
+    <div id="gitaHero" class="gita-zen-box">
+        <div id="zenSanskrit" class="shloka-sanskrit">मा कर्मफलहेतुर्भूर्मा ते सङ्गोऽस्त्वकर्मणि</div>
+        <div id="zenMeaning" style="text-align: center; font-size: 1rem; opacity: 0.9; font-style: italic;">"Never consider yourself the cause of the results of your activities, and never be attached to not doing your duty."</div>
+        <div id="zenMarathi" style="text-align: center; margin-top: 10px; color: #ffa726; font-weight: bold;">"फळाच्या इच्छेने कर्म करू नकोस आणि कर्म न करण्याकडेही तुझी प्रवृत्ती नसावी."</div>
+    </div>
+    <div id="gitaGridContainer" class="gita-grid"></div>
+</div>
+
+<!-- 📝 DEEP NOTES VIEW -->
+<div class="holiday-wrapper" id="notesView" style="display:none;">
+    <div class="holiday-hero" style="background: linear-gradient(135deg, #e91e63 0%, #9c27b0 100%); color: white; border: none; border-radius: 16px; padding: 20px 24px; box-shadow: 0 10px 25px rgba(156, 39, 176, 0.25);">
+        <div>
+            <h3 style="color: white; font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 800;">📝 Deep Notes Module</h3>
+            <div style="opacity: 0.9; margin-top: 4px; font-size: 0.95rem;">Capture thoughts, study guides, doodles, and S-Pen sketches. Saved locally.</div>
+        </div>
+        <div style="font-size: 3.5rem; opacity: 0.8; transform: rotate(12deg);">✍️</div>
+    </div>
+
+    <div class="notes-wrapper">
+        <!-- Sidebar Folders -->
+        <div class="notes-sidebar">
+            <h4 style="margin: 0; font-family: 'Outfit', sans-serif; font-weight: 800; text-align: left;">Folders</h4>
+            <div class="folder-list" id="noteFoldersList">
+                <!-- Folders injected by JS -->
+            </div>
+            <button class="nav-btn" style="margin-top: auto; padding: 10px; font-size: 0.85rem; border-color: #9c27b0; color: #ba68c8; font-weight: bold; background: transparent; text-align: center; border-radius: 8px;" onclick="addNoteFolder()">+ Add Folder</button>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="notes-content-area">
+            <!-- Note Grid View (Home) -->
+            <div id="notesGridView">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 15px; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.08); padding: 6px 12px; border-radius: 10px; flex: 1; max-width: 320px;" id="noteSearchWrap">
+                        <span style="font-size: 1rem; color: #888;">🔍</span>
+                        <input type="text" id="noteSearchInput" placeholder="Search notes..." style="border: none; background: transparent; outline: none; color: var(--text-main); font-family: inherit; font-size: 0.9rem; width: 100%;" oninput="renderNotes()">
+                    </div>
+                    <button class="hol-btn-add" style="background: linear-gradient(135deg, #e91e63, #9c27b0); border: none; padding: 10px 24px; border-radius: 10px; font-weight: bold; font-family: inherit; color: white;" onclick="createNewNote()">+ Add New Note</button>
+                </div>
+                <div class="notes-grid" id="notesGrid">
+                    <!-- Note preview cards injected by JS -->
+                </div>
+            </div>
+
+            <!-- Note Editor View (Hidden by default) -->
+            <div id="noteEditorView" class="note-editor-container" style="display: none;">
+                <div class="note-editor-header">
+                    <input type="text" id="noteTitleInput" class="note-title-input" placeholder="Untitled Note">
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <select id="noteFolderSelect" class="nav-input" style="padding: 6px 12px; font-size: 0.85rem; cursor: pointer; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); width: auto; color: var(--text-main); background: var(--box-bg);">
+                            <!-- Options injected by JS -->
+                        </select>
+                        <button class="toolbar-btn active-tool" id="btnEditorTextMode" onclick="setEditorMode('text')">🔤 Text</button>
+                        <button class="toolbar-btn" id="btnEditorDrawMode" onclick="setEditorMode('draw')">🎨 Draw</button>
+                        <button class="btn-save-edit" style="background: #2e7d32; width: auto; padding: 8px 16px; margin: 0; border-radius: 8px;" onclick="saveCurrentNote()">💾 Save</button>
+                        <button class="btn-delete-task" style="background: #c62828; width: auto; padding: 8px 16px; margin: 0; border-radius: 8px;" onclick="deleteCurrentNote()">🗑️ Delete</button>
+                        <button class="nav-btn" style="width: auto; padding: 8px 16px; margin: 0; border-radius: 8px; text-align: center;" onclick="closeNoteEditor()">🔙 Close</button>
+                    </div>
+                </div>
+
+                <!-- Text Mode View -->
+                <div id="editorTextModeView" style="display: flex; flex-direction: column; gap: 12px;">
+                    <div class="editor-toolbar">
+                        <button class="toolbar-btn" style="font-weight: bold;" onclick="formatDoc('bold')">B</button>
+                        <button class="toolbar-btn" style="font-style: italic;" onclick="formatDoc('italic')">I</button>
+                        <button class="toolbar-btn" style="text-decoration: underline;" onclick="formatDoc('underline')">U</button>
+                        <button class="toolbar-btn" onclick="formatDoc('insertUnorderedList')">• Bullet</button>
+                        <button class="toolbar-btn" onclick="formatDoc('insertOrderedList')">1. List</button>
+                    </div>
+                    <div id="noteContentEditor" class="note-editor-content" contenteditable="true" placeholder="Start typing your note here..."></div>
+                </div>
+
+                <!-- Draw Mode View -->
+                <div id="editorDrawModeView" style="display: none;">
+                    <div class="note-canvas-container">
+                        <div class="canvas-toolbar">
+                            <span style="font-size: 0.8rem; font-weight: bold; color: var(--text-main); margin-right: 5px;">PEN:</span>
+                            <div class="canvas-color-dot active-color" style="background: #000;" onclick="setCanvasColor('#000000', this)"></div>
+                            <div class="canvas-color-dot" style="background: #ef5350;" onclick="setCanvasColor('#ef5350', this)"></div>
+                            <div class="canvas-color-dot" style="background: #1565c0;" onclick="setCanvasColor('#1565c0', this)"></div>
+                            <div class="canvas-color-dot" style="background: #ffffff; border: 1px solid #777;" title="Eraser" onclick="setCanvasColor('eraser', this)">🧽</div>
+                            
+                            <span style="font-size: 0.8rem; font-weight: bold; color: var(--text-main); margin-left: 15px; margin-right: 5px;">SIZE:</span>
+                            <select id="canvasBrushSize" class="nav-input" style="padding: 4px; font-size: 0.8rem; width: auto; cursor: pointer; border-radius: 4px; border: 1px solid rgba(0,0,0,0.1); color: var(--text-main); background: var(--box-bg);">
+                                <option value="3">Thin</option>
+                                <option value="6" selected>Medium</option>
+                                <option value="12">Thick</option>
+                            </select>
+                            
+                            <button class="toolbar-btn" style="margin-left: 15px; border: 1px solid rgba(0,0,0,0.1);" onclick="undoDrawing()">↩️ Undo</button>
+                            <button class="toolbar-btn" style="margin-left: 10px; border: 1px solid rgba(0,0,0,0.1);" onclick="exportDrawingPng()">💾 Export PNG</button>
+                            <button class="toolbar-btn" style="margin-left: auto; border: 1px solid rgba(0,0,0,0.1);" onclick="clearDrawingCanvas()">🧹 Clear Canvas</button>
+                        </div>
+                        <canvas id="noteDrawingCanvas" class="note-drawing-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-box" style="margin-top:20px; background: linear-gradient(to right, rgba(139, 195, 74, 0.05), transparent);">
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 2px solid #aed581; padding-bottom: 10px; margin-bottom: 15px; cursor: pointer;" onclick="toggleWidget('taskMasteryContent', this)">
+        <h3 style="margin:0; font-family:inherit; font-weight:800; color:#33691e; letter-spacing:0.5px; display:flex; align-items:center; gap:8px;">🎯 Elite Task Mastery <span class="collapse-arrow">▶</span></h3>
+        <span style="font-size:0.8rem; color:#33691e; font-weight:bold; letter-spacing:0.5px; text-transform:uppercase; background:rgba(139,195,74,0.15); padding:4px 10px; border-radius:6px; font-family:inherit;">Skill Consistency & Streak Power</span>
+    </div>
+    <div id="taskMasteryContent">
+        <div id="newMasteryGrid" class="mastery-container"></div>
+    </div>
+</div>
+
+<div id="penaltyWrapper" class="dashboard-box penalty-wrapper" style="margin-top:20px; background: linear-gradient(to right, #ffebee, #ffcdd2); border-left: 4px solid #d32f2f; display:none;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 2px solid #ef5350; padding-bottom: 10px; margin-bottom: 15px;">
+        <h3 style="margin:0; font-family:'Georgia',serif; color:#b71c1c;">⚠️ Penalty Vault</h3>
+        <span style="font-size:0.8rem; color:#d32f2f; font-weight:bold;">Do not run from consequence.</span>
+    </div>
+    <div id="penaltyList" style="display:flex; flex-direction:column; gap:15px;"></div>
+</div>
+
+<div class="dashboard-box" style="margin-top:20px; background: linear-gradient(to right, rgba(198,40,40,0.03), transparent);">
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 2px solid #ef9a9a; padding-bottom: 10px; margin-bottom: 15px; cursor: pointer;" onclick="toggleWidget('reasonLedgerContent', this)">
+        <h3 style="margin:0; font-family:inherit; font-weight:800; color:#c62828; letter-spacing:0.5px; display:flex; align-items:center; gap:8px;">📉 Reason Ledger (Missed Tasks) <span class="collapse-arrow">▼</span></h3>
+        <span style="font-size:0.8rem; color:#c62828; font-weight:bold; letter-spacing:0.5px; text-transform:uppercase; background:rgba(198,40,40,0.15); padding:4px 10px; border-radius:6px; font-family:inherit;">Active misses float to the top</span>
+    </div>
+    <div id="reasonLedgerContent">
+        <div id="logGrid" class="modern-log-grid"></div>
+    </div>
+</div>
+
+<div class="secret-trigger" onclick="unlockSecret()">♥</div>
+<div id="secretOverlay" class="secret-modal">
+    <div class="secret-header"><h2 style="font-size:1.5rem; margin:0; color:#4a3b32;" id="secretTitleDate">Secret Journal</h2><span style="cursor:pointer; font-size:1.5rem;" onclick="closeSecret()">×</span></div>
+    <div class="secret-body">
+        <div id="journalContainer" class="journal-container"></div>
+        <div class="new-entry-area">
+            <textarea id="secretInput" class="entry-input" placeholder="Write something..." style="background:#fff; color:#333; border:1px solid #ccc;"></textarea>
+            <button style="background:#d84315; color:white; border:none; padding:10px 20px; cursor:pointer;" onclick="addSecretEntry()">Save</button>
+        </div>
+    </div>
+</div>
+
+<div id="taskDetailModal" class="task-modal">
+    <div class="tm-header">
+        <span id="tmTitle">Task Details</span>
+        <span class="tm-close" onclick="closeTaskModal()">×</span>
+    </div>
+    <div class="tm-body">
+        <div id="tmViewMode">
+            <div class="tm-row"><span class="tm-label">⏰ Time:</span><span id="tmTime" class="tm-val"></span></div>
+            <div class="tm-row"><span class="tm-label">💧 Water Strategy:</span><span id="tmWater" class="tm-val"></span></div>
+            <div class="tm-row"><span class="tm-label">⚡ Specific Rule:</span><span id="tmRule" class="tm-val" style="color:#d84315; font-weight:bold;"></span></div>
+            <button class="btn-edit-mode" onclick="toggleTaskEditMode()">✏️ Edit Task</button>
+        </div>
+        
+        <div id="tmEditMode" style="display:none; text-align:left;">
+            <label class="tm-edit-label">Task Name</label>
+            <input type="text" id="etName" class="tm-edit-input">
+            
+            <label class="tm-edit-label">Active Days (Frequency)</label>
+            <div class="freq-selector">
+                <input type="checkbox" id="f1" class="freq-checkbox" value="1"><label for="f1" class="freq-label">M</label>
+                <input type="checkbox" id="f2" class="freq-checkbox" value="2"><label for="f2" class="freq-label">T</label>
+                <input type="checkbox" id="f3" class="freq-checkbox" value="3"><label for="f3" class="freq-label">W</label>
+                <input type="checkbox" id="f4" class="freq-checkbox" value="4"><label for="f4" class="freq-label">T</label>
+                <input type="checkbox" id="f5" class="freq-checkbox" value="5"><label for="f5" class="freq-label">F</label>
+                <input type="checkbox" id="f6" class="freq-checkbox" value="6"><label for="f6" class="freq-label">S</label>
+                <input type="checkbox" id="f0" class="freq-checkbox" value="0"><label for="f0" class="freq-label">S</label>
+            </div>
+
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1;">
+                    <label class="tm-edit-label">Start Time</label>
+                    <input type="time" id="etStart" class="tm-edit-input">
+                </div>
+                <div style="flex:1;">
+                    <label class="tm-edit-label">End Time</label>
+                    <input type="time" id="etEnd" class="tm-edit-input">
+                </div>
+            </div>
+            
+            <label class="tm-edit-label">Water Strategy</label>
+            <input type="text" id="etWater" class="tm-edit-input" placeholder="e.g. Drink 300ml">
+            
+            <label class="tm-edit-label">Specific Rule / Focus</label>
+            <input type="text" id="etRule" class="tm-edit-input" placeholder="e.g. Deep work, no phone">
+            
+            <button class="btn-save-edit" onclick="saveTaskEdit()">💾 Save Changes</button>
+            <button class="btn-delete-task" onclick="deleteCurrentTask()">🗑️ Delete Task</button>
+        </div>
+    </div>
+</div>
+
+<div id="missReasonModal" class="task-modal" style="display:none; z-index:5000; width:420px; font-family:'Segoe UI', sans-serif;">
+    <div class="tm-header" style="background:#c62828;">
+        <span id="mrmTitle">Why did you miss this task?</span>
+        <span class="tm-close" onclick="closeMissReasonModal()">×</span>
+    </div>
+    <div class="tm-body" style="max-height:450px; overflow-y:auto;">
+        <div style="font-size:0.95rem; margin-bottom:12px; font-weight:bold; color:var(--text-main);" id="mrmTaskInfo">Task Name (Day X)</div>
+        
+        <label class="tm-edit-label" style="color:#c62828; margin-bottom:8px; display:block;">Select a Reason:</label>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:15px;">
+            <button class="nav-btn" style="margin:0; text-align:left; font-size:0.85rem; padding:10px; border-color:#e57373;" onclick="selectMissReason('🛌 Lack of sleep / Fatigue / Woke up late')">🛌 Lack of sleep / Fatigue / Woke up late</button>
+            <button class="nav-btn" style="margin:0; text-align:left; font-size:0.85rem; padding:10px; border-color:#e57373;" onclick="selectMissReason('📱 Screen distraction / Social media / Procrastination')">📱 Screen distraction / Social media / Procrastination</button>
+            <button class="nav-btn" style="margin:0; text-align:left; font-size:0.85rem; padding:10px; border-color:#e57373;" onclick="selectMissReason('🏫 Sudden college work / Exam / Class assignment')">🏫 Sudden college work / Exam / Class assignment</button>
+            <button class="nav-btn" style="margin:0; text-align:left; font-size:0.85rem; padding:10px; border-color:#e57373;" onclick="selectMissReason('🩺 Poor health / Illness / Physical pain')">🩺 Poor health / Illness / Physical pain</button>
+            <button class="nav-btn" style="margin:0; text-align:left; font-size:0.85rem; padding:10px; border-color:#e57373;" onclick="selectMissReason('⛈️ Bad weather / Power outage / Technical issues')">⛈️ Bad weather / Power outage / Technical issues</button>
+            <button class="nav-btn" style="margin:0; text-align:left; font-size:0.85rem; padding:10px; border-color:#e57373;" onclick="selectMissReason('👥 Family event / Friends / Social commitments')">👥 Family event / Friends / Social commitments</button>
+            <button class="nav-btn" style="margin:0; text-align:left; font-size:0.85rem; padding:10px; border-color:#e57373;" onclick="selectMissReason('🧠 Lack of motivation / Mental burnout')">🧠 Lack of motivation / Mental burnout</button>
+        </div>
+        
+        <label class="tm-edit-label" style="color:#c62828;">Or write a custom reason:</label>
+        <textarea id="mrmCustomReason" class="tm-edit-input" style="height:60px; resize:none; margin:5px 0 10px 0; border:1px solid #ccc; border-radius:4px; box-sizing:border-box;" placeholder="Type custom reason..."></textarea>
+        <button class="btn-save-edit" style="background:#c62828; margin:0;" onclick="submitCustomMissReason()">Submit Custom Reason</button>
+    </div>
+</div>
+
+<div id="roadmapModal" class="roadmap-modal" style="display:none;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h2 style="color:#00e5ff; margin:0;">🚀 Zero to Hero Master Tracker</h2>
+        <div style="color:#aaa; font-size:0.9rem;">(Tags & Dates Auto-Save | Text is Editable)</div>
+        <button style="background:none; border:none; font-size:2rem; cursor:pointer; color:#fff;" onclick="closeRoadmap()">×</button>
+    </div>
+
+    
+    <div class="rm-progress-container">
+        <div id="rmProgressBar" class="rm-progress-bar"></div>
+        <div id="rmProgressText" class="rm-progress-text">0% Completed</div>
+    </div>
+
+    <table class="roadmap-table">
+        <thead>
+            <tr>
+                <th style="width:50px;">W#</th>
+                <th style="width:110px;">🏷️ Tag</th>
+                <th style="width:120px;">📅 Start</th>
+                <th style="width:120px;">🏁 Deadline</th>
+                <th>🧠 DSA Focus</th>
+                <th>⚡ Must-Do Problems</th>
+                <th>💻 Dev Module</th>
+                <th>🏆 Weekly Deliverable</th>
+                <th>✅</th>
+            </tr>
+        </thead>
+        <tbody id="roadmapBody"></tbody>
+    </table>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

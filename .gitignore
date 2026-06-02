@@ -1,0 +1,8 @@
+node_modules/
+track/node_modules/
+DAYS/
+.vscode/
+.htmlhintrc
+habit.html.bak
+*.txt
+*.png
